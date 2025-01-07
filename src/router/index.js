@@ -5,6 +5,8 @@ import Registro from "../views/auth/Register.vue"
 import { createRouter, createWebHistory } from "vue-router";
 import Perfil from "../views/admin/perfil/Perfil.vue";
 
+import AppLayout from '@/layout/AppLayout.vue'
+
 const routes = [
     { path: '/', component: Inicio, name: 'Inicio',  meta: {requireAuth: true} },
     { path: '/nosotros', component: Acerca, name: 'Nosotros' },
@@ -12,7 +14,14 @@ const routes = [
     { path: '/auth/login', component: Login, name: 'Login', meta: {redirectIfAuth: true} },
     { path: '/auth/register', component: Registro, name: 'Registro' },
 
-    { path: '/admin/perfil', component: Perfil, name: 'Perfil', meta: {requireAuth: true} },
+    {
+        path: '/admin',
+        component: AppLayout,
+        children: [
+            { path: 'perfil', component: Perfil, name: 'Perfil', meta: {requireAuth: true} },
+            
+        ]
+    }
 ];
 
 const router = createRouter({
