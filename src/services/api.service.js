@@ -32,6 +32,7 @@ export default function Api(){
             // error de auth (403)
 
             // error 500
+            return Promise.reject(error);
 
         }
     )

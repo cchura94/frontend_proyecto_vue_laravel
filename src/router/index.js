@@ -6,6 +6,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Perfil from "../views/admin/perfil/Perfil.vue";
 
 import AppLayout from '@/layout/AppLayout.vue'
+import Usuario from '@/views/admin/usuario/Usuario.vue'
 
 const routes = [
     { path: '/', component: Inicio, name: 'Inicio',  meta: {requireAuth: true} },
@@ -19,6 +20,11 @@ const routes = [
         component: AppLayout,
         children: [
             { path: 'perfil', component: Perfil, name: 'Perfil', meta: {requireAuth: true} },
+            {
+                path: 'usuario',
+                component: Usuario,
+                meta: {requireAuth: true}
+            }
             
         ]
     }
