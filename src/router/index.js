@@ -7,6 +7,7 @@ import Perfil from "../views/admin/perfil/Perfil.vue";
 
 import AppLayout from '@/layout/AppLayout.vue'
 import Usuario from '@/views/admin/usuario/Usuario.vue'
+import Proyecto from '@/views/admin/proyecto/Proyecto.vue'
 
 const routes = [
     { path: '/', component: Inicio, name: 'Inicio',  meta: {requireAuth: true} },
@@ -23,6 +24,11 @@ const routes = [
             {
                 path: 'usuario',
                 component: Usuario,
+                meta: {requireAuth: true}
+            },
+            {
+                path: 'proyecto',
+                component: Proyecto,
                 meta: {requireAuth: true}
             }
             
