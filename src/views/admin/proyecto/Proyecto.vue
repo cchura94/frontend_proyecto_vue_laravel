@@ -54,25 +54,87 @@
                 <Column field="fecha_fin" header="Fecha FIN" sortable style="min-width: 5rem"></Column>
 
                 
-                <Column field="estado" header="ESTADO" sortable style="min-width: 12rem">
+                <Column field="estado" header="ESTADO" sortable style="min-width: 3rem">
                     <template #body="slotProps">
                         <Tag :value="slotProps.data.estado" :severity="getStatusLabel(slotProps.data.estado)" />
                     </template>
                 </Column>
+                <Column field="jefep" header="JEFE PROYECTO" sortable style="min-width: 6rem">
+                    <template #body="slotProps">
+                        <Tag :value="slotProps.data.jefe_proyecto.name" severity="" />
+                    </template>
+                </Column>
                 <Column :exportable="false" style="min-width: 12rem">
                     <template #body="slotProps">
-                        <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editProduct(slotProps.data)" />
+                        <Button icon="pi pi-eye" rounded severity="warn" class="mr-2" @click="mostrarProyecto(slotProps.data)" />
+                        <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editarProyecto(slotProps.data)" />
                         <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmDeleteProduct(slotProps.data)" />
                     </template>
                 </Column>
             </DataTable>
         </div>
+
+        <Dialog v-model:visible="proyectoDialog" :style="{ width: '450px' }" header="Nuevo Proyecto" :modal="true">
+            <!--{{ proyecto }}-->
+            <div class="flex flex-col gap-6">
+                <!--<img v-if="product.image" :src="`https://primefaces.org/cdn/primevue/images/product/${product.image}`" :alt="product.image" class="block m-auto pb-4" />-->
+                <div>
+                    <label for="name" class="block font-bold mb-3">Nombre</label>
+                    <InputText id="name" v-model.trim="proyecto.nombre" required="true" autofocus :invalid="submitted && !proyecto.nombre" fluid />
+                    <small v-if="submitted && !proyecto.nombre" class="text-red-500">Nombre de proyecto es Obligatorio.</small>
+                </div>
+                <div>
+                    <label for="description" class="block font-bold mb-3">Descripción</label>
+                    <Textarea id="description" v-model="proyecto.descripcion" required="true" rows="3" cols="20" fluid />
+                </div>
+
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-6">
+                        <label for="description" class="block font-bold mb-3">Fecha INICIO</label>
+                        <DatePicker v-model="proyecto.fecha_inicio" fluid />
+                    </div>
+    
+                    <div class="col-span-6">
+                        <label for="description" class="block font-bold mb-3">Fecha FIN</label>
+                        <DatePicker v-model="proyecto.fecha_fin" fluid />
+                    </div>
+
+                </div>
+                <div>
+                    <label for="jp" class="block font-bold mb-3">Jefe Proyecto</label>
+                    
+                    <Select v-model="proyecto.jefe_proyecto" :options="usuarios" optionLabel="name" optionValue="id" placeholder="seleccionar Jefe Proyecto" class="w-full md:w-56" fluid />
+                </div>
+
+                <!--
+
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-6">
+                        <label for="price" class="block font-bold mb-3">Price</label>
+                        <InputNumber id="price" v-model="product.price" mode="currency" currency="USD" locale="en-US" fluid />
+                    </div>
+                    <div class="col-span-6">
+                        <label for="quantity" class="block font-bold mb-3">Quantity</label>
+                        <InputNumber id="quantity" v-model="product.quantity" integeronly fluid />
+                    </div>
+                </div>
+                -->
+            </div>
+
+            <template #footer>
+                <Button label="Cancelar" icon="pi pi-times" text @click="hideDialog" />
+                <Button label="Guardar" icon="pi pi-check" @click="guardarProyecto()" />
+            </template>
+        </Dialog>
+
     </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import proyectoService from "./../../../services/proyecto.service"
+import usuarioService from "./../../../services/usuario.service"
 
 
 const selectedProyectos = ref([]);
@@ -81,10 +143,17 @@ const proyectos = ref([])
 const totalRecords = ref()
 const lazyParams = ref({})
 const buscar = ref("")
+const proyectoDialog = ref(false)
+const proyecto = ref({estado: "activo"});
+const submitted = ref(false);
+const usuarios = ref([])
+
+const router = useRouter()
 
 
 onMounted(() => {
     getProyectos()
+    getUsuarios()
 
     lazyParams.value = {
         first: 0,
@@ -109,7 +178,8 @@ const onPage = async (event) => {
 
 
 const abrirDialogNuevoProyecto = () => {
-
+    proyecto.value = {estado: "activo"}
+    proyectoDialog.value = true
 }
 
 const confirmDeleteSelected = () => {
@@ -135,5 +205,36 @@ const getStatusLabel = (status) => {
             return null;
     }
 };
+
+const hideDialog = () => {
+    proyectoDialog.value = false;
+}
+const guardarProyecto = async () => {
+
+    if(proyecto.value.id){
+        // modificar
+        const {data} = await proyectoService.modificar(proyecto.value.id, proyecto.value)
+    }else{
+        // guardar
+        const {data} = await proyectoService.guardar(proyecto.value)
+    }
+    getProyectos()
+    proyectoDialog.value = false
+    proyecto.value = {estado: "activo"}
+}
+
+const getUsuarios = async () => {
+    const { data } = await usuarioService.listar();
+    usuarios.value = data
+}
+
+const editarProyecto = (proy) => {
+    proyecto.value = proy;
+    proyectoDialog.value = true;
+}
+
+const mostrarProyecto = (proy) => {
+    router.push(`/admin/proyecto/${proy.id}`)
+}
 
 </script>
