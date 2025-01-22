@@ -20,4 +20,8 @@ export default {
   eliminar: (id) => {
     return Api().delete(`/proyecto/${id}`);
   },
+
+  asignarRecurso: (id, datos) => {
+    return Api().post(`/proyecto/${id}/asignar-recurso`, datos);
+  },
 };

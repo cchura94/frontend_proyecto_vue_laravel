@@ -9,6 +9,7 @@ import AppLayout from '@/layout/AppLayout.vue'
 import Usuario from '@/views/admin/usuario/Usuario.vue'
 import Proyecto from '@/views/admin/proyecto/Proyecto.vue'
 import DetalleProyecto from '@/views/admin/proyecto/DetalleProyecto.vue'
+import Recurso from '@/views/admin/recurso/Recurso.vue'
 
 const routes = [
     { path: '/', component: Inicio, name: 'Inicio',  meta: {requireAuth: true} },
@@ -36,6 +37,12 @@ const routes = [
                 path: 'proyecto/:id',
                 component: DetalleProyecto,
                 name: 'DetalleProyecto',
+                meta: {requireAuth: true}
+            },
+            {
+                path: 'recurso',
+                component: Recurso,
+                name: 'Recurso',
                 meta: {requireAuth: true}
             }
             
