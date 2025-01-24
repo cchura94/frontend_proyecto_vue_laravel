@@ -20,4 +20,9 @@ export default {
   eliminar: (id) => {
     return Api().delete(`/tarea/${id}`);
   },
+
+  asignarUsuario: (id, datos) => {
+    return Api().post(`/tarea/${id}/asignar-usuario`, datos);
+
+  }
 };

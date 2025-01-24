@@ -160,6 +160,30 @@
       <Column field="id" header="ID"></Column>
       <Column field="name" header="Nombre"></Column>
       <Column field="email" header="CORREO ELECTRONICO"></Column>
+      <Column field="persona.nombres" header="DATOS PERSONALES">
+        <template #body="slotProps">
+          <span v-if="slotProps.data.persona">
+            {{ `${slotProps.data.persona?.nombres} ${slotProps.data.persona?.apellidos}` }}
+            <br>
+            <strong>{{ slotProps.data.persona.ci }}</strong>
+          </span>
+        </template>
+      </Column>
+      <Column field="tareas" header="J.P">
+        <template #body="slotProps">
+          <strong>Jefe Proyecto: {{ slotProps.data.proyectos.length }}</strong>
+          <hr>
+          <a :href="`/admin/proyecto/${proy.id}`" v-for="proy in slotProps.data.proyectos" :key="proy.id">
+            <Chip :label="proy.nombre" icon="pi pi-apple" />
+            </a>
+        </template>
+      </Column>
+      <Column field="tareas" header="Nro.TAREAS">
+        <template #body="slotProps">
+          {{ slotProps.data.tareas.length }}
+        </template>
+      </Column>
+
       <Column :exportable="false" style="min-width: 12rem">
           <template #body="slotProps">
               <Button icon="pi pi-user" rounded outlined severity="warn" class="mr-2" @click="formNuevoPersona(slotProps.data)" v-if="!slotProps.data.persona" />

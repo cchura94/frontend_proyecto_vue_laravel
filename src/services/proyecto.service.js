@@ -24,4 +24,9 @@ export default {
   asignarRecurso: (id, datos) => {
     return Api().post(`/proyecto/${id}/asignar-recurso`, datos);
   },
+
+  asignarInforme: (id, datos) => {
+    return Api().post(`/proyecto/${id}/asignar-informe`, datos);
+
+  }
 };
