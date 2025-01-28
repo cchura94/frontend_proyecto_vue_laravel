@@ -8,6 +8,11 @@
                 </template>
 
                 <template #end>
+                    
+                    <Button label="EXCEL" icon="pi pi-upload" severity="secondary" @click="exportarProyectosEXCEL" />
+
+                    <Button label="PDF" icon="pi pi-upload" severity="secondary" @click="exportarProyectosPDF" />
+
                     <FileUpload mode="basic" accept="image/*" :maxFileSize="1000000" label="Import" customUpload chooseLabel="Importar" class="mr-2" auto :chooseButtonProps="{ severity: 'secondary' }" />
                     <Button label="Exportar" icon="pi pi-upload" severity="secondary" @click="exportCSV($event)" />
                 </template>
@@ -61,11 +66,14 @@
                 </Column>
                 <Column field="jefep" header="JEFE PROYECTO" sortable style="min-width: 6rem">
                     <template #body="slotProps">
-                        <Tag :value="slotProps.data.jefe_proyecto.name" severity="" />
+                        <Tag :value="slotProps.data.jefe_proyecto_data.name" severity="" />
                     </template>
                 </Column>
                 <Column :exportable="false" style="min-width: 12rem">
                     <template #body="slotProps">
+                        
+                        <Button icon="pi pi-file" rounded severity="info" class="mr-2" @click="exportarProyectoPDF(slotProps.data.id)" />
+
                         <Button icon="pi pi-eye" rounded severity="warn" class="mr-2" @click="mostrarProyecto(slotProps.data)" />
                         <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editarProyecto(slotProps.data)" />
                         <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmDeleteProduct(slotProps.data)" />
@@ -103,7 +111,7 @@
                 <div>
                     <label for="jp" class="block font-bold mb-3">Jefe Proyecto</label>
                     
-                    <Select v-model="proyecto.jefe_proyecto" :options="usuarios" optionLabel="name" optionValue="id" placeholder="seleccionar Jefe Proyecto" class="w-full md:w-56" fluid />
+                    <Select v-model="proyecto.jefe_proyecto_data" :options="usuarios" optionLabel="name" optionValue="id" placeholder="seleccionar Jefe Proyecto" class="w-full md:w-56" fluid />
                 </div>
 
                 <!--
@@ -174,6 +182,48 @@ const onPage = async (event) => {
     console.log(event)
     lazyParams.value = event
     getProyectos()
+}
+
+const exportarProyectosPDF = async () => {
+    const respuesta = await proyectoService.descargarProyectosPdf();
+
+    const url = window.URL.createObjectURL(new Blob([respuesta.data], {type: 'application/json'}));
+
+    const link = document.createElement('a');
+    link.href = url;
+
+    link.setAttribute('download', 'reporte-pdf-proyectos.pdf');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+const exportarProyectoPDF = async (id) => {
+    const respuesta = await proyectoService.descargarPorProyectoPdf(id);
+
+    const url = window.URL.createObjectURL(new Blob([respuesta.data], {type: 'application/pdf'}));
+
+    const link = document.createElement('a');
+    link.href = url;
+
+    link.setAttribute('download', 'reporte-proyecto.pdf');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+const exportarProyectosEXCEL = async () => {
+    const respuesta = await proyectoService.descargarProyectosExcel();
+
+    const url = window.URL.createObjectURL(new Blob([respuesta.data]));
+
+    const link = document.createElement('a');
+    link.href = url;
+
+    link.setAttribute('download', 'reporte-excel-proyectos.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 

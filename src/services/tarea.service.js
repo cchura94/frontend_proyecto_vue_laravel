@@ -24,5 +24,10 @@ export default {
   asignarUsuario: (id, datos) => {
     return Api().post(`/tarea/${id}/asignar-usuario`, datos);
 
+  },
+  actualizarEstadoTarea: (id, datos) => {
+    return Api().post(`tarea/${id}/actualizar-estado`, datos);
+
   }
+  
 };

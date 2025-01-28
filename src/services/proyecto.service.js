@@ -28,5 +28,19 @@ export default {
   asignarInforme: (id, datos) => {
     return Api().post(`/proyecto/${id}/asignar-informe`, datos);
 
+  },
+
+  descargarProyectosPdf: () => {
+    return Api().get(`/proyecto/reportes/pdf`, {responseType: 'blob'});
+  },
+
+  descargarPorProyectoPdf: (id) => {
+    return Api().get(`/proyecto/${id}/reportes/pdf`, {responseType: 'blob'});
+
+  },
+  descargarProyectosExcel: () => {
+    return Api().get(`/proyecto/reportes/excel`, {responseType: 'blob'});
+
   }
+  
 };
